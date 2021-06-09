@@ -33,6 +33,30 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Look Direction"",
+                    ""type"": ""Button"",
+                    ""id"": ""e0766aed-f200-4846-9252-c61d8fd24e5c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""bfe3eaa6-0b0c-4afc-b35d-0dc4ad134eb5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""da02fbf1-33d3-4f14-994f-2138ad2c0de9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -101,6 +125,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5e096a4c-5370-4930-ab36-55d70f2a8d2f"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look Direction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""23910304-a031-4713-9ec6-7cbfe2d217cc"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8505323b-9634-4698-93a8-cbf63dfe76da"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -111,6 +168,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_General = asset.FindActionMap("General", throwIfNotFound: true);
         m_General_Movement = m_General.FindAction("Movement", throwIfNotFound: true);
         m_General_Jump = m_General.FindAction("Jump", throwIfNotFound: true);
+        m_General_LookDirection = m_General.FindAction("Look Direction", throwIfNotFound: true);
+        m_General_Shoot = m_General.FindAction("Shoot", throwIfNotFound: true);
+        m_General_Throw = m_General.FindAction("Throw", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -162,12 +222,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private IGeneralActions m_GeneralActionsCallbackInterface;
     private readonly InputAction m_General_Movement;
     private readonly InputAction m_General_Jump;
+    private readonly InputAction m_General_LookDirection;
+    private readonly InputAction m_General_Shoot;
+    private readonly InputAction m_General_Throw;
     public struct GeneralActions
     {
         private @PlayerControls m_Wrapper;
         public GeneralActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_General_Movement;
         public InputAction @Jump => m_Wrapper.m_General_Jump;
+        public InputAction @LookDirection => m_Wrapper.m_General_LookDirection;
+        public InputAction @Shoot => m_Wrapper.m_General_Shoot;
+        public InputAction @Throw => m_Wrapper.m_General_Throw;
         public InputActionMap Get() { return m_Wrapper.m_General; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -183,6 +249,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnJump;
+                @LookDirection.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnLookDirection;
+                @LookDirection.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnLookDirection;
+                @LookDirection.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnLookDirection;
+                @Shoot.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnShoot;
+                @Shoot.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnShoot;
+                @Shoot.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnShoot;
+                @Throw.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnThrow;
+                @Throw.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnThrow;
+                @Throw.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnThrow;
             }
             m_Wrapper.m_GeneralActionsCallbackInterface = instance;
             if (instance != null)
@@ -193,6 +268,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @LookDirection.started += instance.OnLookDirection;
+                @LookDirection.performed += instance.OnLookDirection;
+                @LookDirection.canceled += instance.OnLookDirection;
+                @Shoot.started += instance.OnShoot;
+                @Shoot.performed += instance.OnShoot;
+                @Shoot.canceled += instance.OnShoot;
+                @Throw.started += instance.OnThrow;
+                @Throw.performed += instance.OnThrow;
+                @Throw.canceled += instance.OnThrow;
             }
         }
     }
@@ -201,5 +285,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnLookDirection(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
+        void OnThrow(InputAction.CallbackContext context);
     }
 }
