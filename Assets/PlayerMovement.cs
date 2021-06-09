@@ -14,7 +14,6 @@ public sealed class PlayerMovement : MonoBehaviour
 
     [Space]
     [SerializeField] private float m_JumpPower;
-    [SerializeField] private float m_LeapPower;
     [SerializeField] private int m_MaxAirJumps;
     [SerializeField] private Transform m_GroundCheckPoint;
     [SerializeField] private float m_GroundCheckRadius;
@@ -28,6 +27,8 @@ public sealed class PlayerMovement : MonoBehaviour
     private Rigidbody2D m_Rigidbody;
 
     private int m_CurrentAirJumps;
+
+    public bool IsSliding => m_Input.Controls.General.Crouch.ReadValue<float>() > InputDeadzone;
 
     private void Start()
     {
@@ -49,12 +50,15 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void ApplyMovement()
     {
-        Vector2 currentVelocity = m_Rigidbody.velocity;
-        Vector2 targetVelocity = m_Input.Controls.General.Movement.ReadValue<Vector2>() * m_MovementSpeed;
+        if (!IsSliding)
+        {
+            Vector2 currentVelocity = m_Rigidbody.velocity;
+            Vector2 targetVelocity = m_Input.Controls.General.Movement.ReadValue<Vector2>() * m_MovementSpeed;
 
-        float accelerationTime = GetGrounded() ? m_GroundedAccelerationTime : m_AirAccelerationTime;
-        Vector2 force = Vector2.ClampMagnitude(targetVelocity - currentVelocity, m_MovementSpeed) / accelerationTime;
-        m_Rigidbody.velocity += force * Time.deltaTime;
+            float accelerationTime = GetGrounded() ? m_GroundedAccelerationTime : m_AirAccelerationTime;
+            Vector2 force = Vector2.ClampMagnitude(targetVelocity - currentVelocity, m_MovementSpeed) / accelerationTime;
+            m_Rigidbody.velocity += force * Time.deltaTime;
+        }
     }
 
     private void UpdateGravity()
@@ -107,7 +111,7 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void ApplyJumpForce()
     {
-        m_Rigidbody.velocity = new Vector2(m_Input.Controls.General.Movement.ReadValue<Vector2>().x * m_LeapPower, m_JumpPower);
+        m_Rigidbody.velocity = new Vector2(m_Rigidbody.velocity.x, m_JumpPower);
     }
 
     private void OnDrawGizmosSelected()

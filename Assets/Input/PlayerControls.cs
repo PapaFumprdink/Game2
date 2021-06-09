@@ -57,6 +57,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7aef4ab-e136-4e12-a90b-9c5b338e0a7f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -158,6 +166,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ccbf90e0-ed85-42e3-ac7f-48280736ed10"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -171,6 +190,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_General_LookDirection = m_General.FindAction("Look Direction", throwIfNotFound: true);
         m_General_Shoot = m_General.FindAction("Shoot", throwIfNotFound: true);
         m_General_Throw = m_General.FindAction("Throw", throwIfNotFound: true);
+        m_General_Crouch = m_General.FindAction("Crouch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -225,6 +245,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_General_LookDirection;
     private readonly InputAction m_General_Shoot;
     private readonly InputAction m_General_Throw;
+    private readonly InputAction m_General_Crouch;
     public struct GeneralActions
     {
         private @PlayerControls m_Wrapper;
@@ -234,6 +255,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @LookDirection => m_Wrapper.m_General_LookDirection;
         public InputAction @Shoot => m_Wrapper.m_General_Shoot;
         public InputAction @Throw => m_Wrapper.m_General_Throw;
+        public InputAction @Crouch => m_Wrapper.m_General_Crouch;
         public InputActionMap Get() { return m_Wrapper.m_General; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -258,6 +280,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Throw.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnThrow;
                 @Throw.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnThrow;
                 @Throw.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnThrow;
+                @Crouch.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnCrouch;
             }
             m_Wrapper.m_GeneralActionsCallbackInterface = instance;
             if (instance != null)
@@ -277,6 +302,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Throw.started += instance.OnThrow;
                 @Throw.performed += instance.OnThrow;
                 @Throw.canceled += instance.OnThrow;
+                @Crouch.started += instance.OnCrouch;
+                @Crouch.performed += instance.OnCrouch;
+                @Crouch.canceled += instance.OnCrouch;
             }
         }
     }
@@ -288,5 +316,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnLookDirection(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
     }
 }

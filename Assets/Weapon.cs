@@ -8,19 +8,9 @@ public abstract class Weapon : MonoBehaviour
     [Space]
     [SerializeField] private SpriteRenderer m_SpriteRenderer;
 
-    [Space]
-    [SerializeField] private Transform m_LeftIKTarget;
-    [SerializeField] private Transform m_LeftIKHint;
-    [SerializeField] private Transform m_RightIKTarget;
-    [SerializeField] private Transform m_RightIKHint;
-
     private Rigidbody2D m_Rigidbody;
 
     public PlayerWeaponManager BindedManager { get; private set; }
-    public Transform LeftIKTarget => m_LeftIKTarget;
-    public Transform LeftIKHint => m_LeftIKHint;
-    public Transform RightIKTarget => m_RightIKTarget;
-    public Transform RightIKHint => m_RightIKHint;
 
     protected virtual void Awake()
     {
